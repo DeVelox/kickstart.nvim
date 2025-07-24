@@ -116,6 +116,7 @@ vim.o.showmode = false
 --  See `:help 'clipboard'`
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
+  vim.g.clipboard = 'osc52'
 end)
 
 -- Enable break indent
@@ -679,7 +680,7 @@ require('lazy').setup({
             ['rust-analyzer'] = {
               cargo = {
                 extraEnv = {
-                  CARGO_INCREMENTAL = 0,
+                  CARGO_INCREMENTAL = '0',
                 },
               },
             },
