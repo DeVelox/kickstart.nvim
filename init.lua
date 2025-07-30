@@ -781,6 +781,27 @@ require('lazy').setup({
     },
   },
 
+  { -- AI code completion
+    'milanglacier/minuet-ai.nvim',
+    opts = {
+      provider = 'openai_fim_compatible',
+      n_completions = 1,
+      context_window = 2048,
+      provider_options = {
+        openai_fim_compatible = {
+          api_key = 'TERM',
+          name = 'Ollama',
+          end_point = 'http://localhost:11434/v1/completions',
+          model = 'qwen2.5-coder:3b-base-q8_0',
+          optional = {
+            max_tokens = 56,
+            top_p = 0.9,
+          },
+        },
+      },
+    },
+  },
+
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',
@@ -840,6 +861,11 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
+        ['<A-y>'] = {
+          function(cmp)
+            cmp.show { providers = { 'minuet' } }
+          end,
+        },
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -855,12 +881,20 @@ require('lazy').setup({
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        trigger = { prefetch_on_insert = false },
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'minuet' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+          minuet = {
+            name = 'minuet',
+            module = 'minuet.blink',
+            async = true,
+            timeout_ms = 3000,
+            score_offset = 50, -- Gives minuet higher priority among suggestions
+          },
         },
       },
 
